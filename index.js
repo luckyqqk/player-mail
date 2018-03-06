@@ -1,23 +1,12 @@
-var PlayerMail = require('./playerMail');
-
-/**
- */
+var PlayerMail = require('./lib/playerMail');
 
 /**
  * 邮件服务对象
  * @param mysqlPool                         数据库连接池句柄
- * @param {object} mailOpts
- * @param {string} mailOpts.database        数据库名
- * @param {string} mailOpts.table           表名
- * @param {string} mailOpts.primaryKey      主键名
- * @param {bool}   mailOpts.autoIncrement   是否主键自增
- * @param {obj}    mailOpts.fields          所有字段
- * @param {string} mailOpts.fields.keys     字段名
- * @param {*}      mailOpts.fields.value    字段默认值
  * @constructor
  */
-var MailServer = function(mysqlPool, mailOpts) {
-    this.mailMaker = new PlayerMail(mailOpts);
+var MailServer = function(mysqlPool) {
+    this.mailMaker = null;
     this.pool = mysqlPool;
 };
 
@@ -25,7 +14,20 @@ var PRIMARY_KEY = 'priKey';
 
 module.exports = MailServer;
 
-MailServer.prototype.start = function(cb) {
+/**
+ * 初始化方法, 设置表结构
+ * @param {object} mailOpts
+ * @param {string} mailOpts.database        数据库名
+ * @param {string} mailOpts.name            表名
+ * @param {string} mailOpts.primaryKey      主键名
+ * @param {bool}   mailOpts.autoIncrement   是否主键自增
+ * @param {obj}    mailOpts.fields          所有字段
+ * @param {string} mailOpts.fields.keys     字段名
+ * @param {*}      mailOpts.fields.value    字段默认值
+ * @param {function} cb
+ */
+MailServer.prototype.start = function(mailOpts, cb) {
+    this.mailMaker = new PlayerMail(mailOpts);
     cb();
 };
 
